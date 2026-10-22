@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='utf-8'/>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'/>
+  <title><data:blog.pageTitle/></title>
+
+  <style type='text/css'>
+    /*<![CDATA[*/
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      overflow: hidden !important;
+      background-color: #0f0f0f !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+    }
+    #video-tube-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      outline: none;
+      display: block;
+      z-index: 999999;
+    }
+    /*]]>*/
+  </style>
+
+  &lt;!--[if lt IE 9]&gt;
+  &lt;script src=&quot;//html5shiv.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+  &lt;![endif]--&gt;
+  <b:skin><![CDATA[]]></b:skin>
+</head>
+<body>
+
+  <!-- আপনার লাইভ সাইটের আইফ্রেম লিঙ্ক -->
+  <iframe allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen='allowfullscreen' id='video-tube-frame' src='https://mahiislama154-creator.github.io/video-tubebot/video-tube/'>
+  </iframe>
+
+  <!-- 
+    ========================================================
+    TOP-WINDOW LINK BRIDGE & 5-LAYER ANTI-INSPECT SHIELD
+    ১. আইফ্রেম থেকে টেলিগ্রাম ও ডাউনলোড লিংক ব্লগারে ১০০% ওপেন হবে।
+    ২. F12 ও Inspect ব্ল্যাকআউট প্রোটেকশন সক্রিয় থাকবে।
+    ======================================================== 
+  -->
+  <script type='text/javascript'>
+    //<![CDATA[
+    (function() {
+      'use strict';
+
+      // ১. আইফ্রেম থেকে ডাউনলোড বা টেলিগ্রাম লিংক আসলে টপ উইন্ডোতে ওপেন করার ব্রিজ
+      window.addEventListener('message', function(event) {
+        if (event && event.data && (event.data.action === 'OPEN_LINK' || event.data.type === 'OPEN_LINK')) {
+          var targetUrl = event.data.url;
+          if (targetUrl) {
+            try {
+              var a = document.createElement('a');
+              a.href = targetUrl;
+              a.target = '_blank';
+              a.rel = 'noopener noreferrer';
+              document.body.appendChild(a);
+              a.click();
+              setTimeout(function() {
+                try { a.remove(); } catch(e) {}
+              }, 500);
+            } catch(err) {
+              window.open(targetUrl, '_blank');
+            }
+          }
+        }
+      });
+
+      var isShieldTriggered = false;
+
+      // লেয়ার ৫: ব্ল্যাকআউট ও কোড ওয়াইপআউট স্ক্রিন
+      function triggerBlackout(reason) {
+        if (isShieldTriggered) return;
+        isShieldTriggered = true;
+
+        var iframe = document.getElementById('video-tube-frame');
+        if (iframe) {
+          try { iframe.remove(); } catch(e) {}
+        }
+
+        document.body.innerHTML = `
+          <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000 !important;
+            color: #ff3333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 999999999;
+            text-align: center;
+            padding: 24px;
+            user-select: none;
+          ">
+            <div style="
+              background: #0d0d0d;
+              border: 1px solid #ff3333;
+              padding: 35px 25px;
+              border-radius: 16px;
+              max-width: 420px;
+              box-shadow: 0 0 50px rgba(255, 51, 51, 0.4);
+            ">
+              <div style="font-size: 52px; margin-bottom: 16px;">⚠️</div>
+              <h1 style="font-size: 22px; font-weight: 800; margin-bottom: 10px; color: #ff3333; letter-spacing: 1px;">ACCESS RESTRICTED</h1>
+              <p style="font-size: 14px; color: #a0a0a0; line-height: 1.5; margin-bottom: 15px;">
+                Developer tools, source inspection and DevTools are strictly prohibited on this platform.
+              </p>
+              <span style="
+                display: inline-block;
+                background: rgba(255, 51, 51, 0.15);
+                color: #ff5247;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 700;
+                border: 1px solid rgba(255, 51, 51, 0.4);
+              ">SECURITY VIOLATION DETECTED</span>
+            </div>
+          </div>
+        `;
+
+        try {
+          console.clear();
+          console.log = function() {};
+          console.info = function() {};
+          console.warn = function() {};
+          console.error = function() {};
+        } catch(e) {}
+      }
+
+      // লেয়ার ১: মাউসের রাইট ক্লিক বন্ধ
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+      }, { capture: true });
+
+      // লেয়ার ২: কিবোর্ড শর্টকাট ও F12 সম্পূর্ণ ব্লক
+      document.addEventListener('keydown', function(e) {
+        var key = e.key ? e.key.toUpperCase() : '';
+        var code = e.keyCode || e.which;
+
+        if (code === 123 || key === 'F12') {
+          e.preventDefault();
+          triggerBlackout('F12');
+          return false;
+        }
+
+        if (e.ctrlKey && e.shiftKey) {
+          if (code === 73 || key === 'I' || code === 74 || key === 'J' || code === 67 || key === 'C') {
+            e.preventDefault();
+            triggerBlackout('Inspect Shortcut');
+            return false;
+          }
+        }
+
+        if (e.ctrlKey) {
+          if (code === 85 || key === 'U' || code === 83 || key === 'S') {
+            e.preventDefault();
+            triggerBlackout('View Source');
+            return false;
+          }
+        }
+      }, { capture: true });
+
+      // লেয়ার ৩: ব্রাউজার মেনু দিয়ে Inspect খুললে উইন্ডো সাইজ ডিটেকশন
+      var threshold = 160;
+      setInterval(function() {
+        if (isShieldTriggered) return;
+        var widthDiff = window.outerWidth - window.innerWidth > threshold;
+        var heightDiff = window.outerHeight - window.innerHeight > threshold;
+        if (widthDiff || heightDiff) {
+          triggerBlackout('Window DevTools Dock');
+        }
+      }, 400);
+
+      // লেয়ার ৪: মেমোরি ডিবাগার ট্র্যাপ
+      setInterval(function() {
+        if (isShieldTriggered) return;
+        var start = performance.now();
+        /* eslint-disable no-debugger */
+        debugger;
+        /* eslint-enable no-debugger */
+        var timeTaken = performance.now() - start;
+        if (timeTaken > 100) {
+          triggerBlackout('Debugger Trap');
+        }
+      }, 1000);
+
+      document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+      document.addEventListener('dragstart', function(e) { e.preventDefault(); });
+
+    })();
+    //]]>
+  </script>
+
+  <!-- Blogger-এর জন্য রিকয়ার্ড সেকশন -->
+  <b:section id='main' showaddelement='no'/>
+
+</body>
+</html>

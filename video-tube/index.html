@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Tube | Play Button & Dynamic Labels</title>
+  <meta name="description" content="Video Tube - Play Button Overlay, Dynamic Labels and Real View Counter.">
+
+  <!-- Google Fonts: Hind Siliguri & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+  <!-- Telegram WebApp SDK (Telegram Mini App Support) -->
+  <script defer src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-badge">
+          <i class="fa-solid fa-play"></i>
+        </div>
+        <div>
+          <h1 class="brand-title" id="site-brand-title">Video<span>Tube</span></h1>
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="Search by title or category..." autocomplete="off">
+        <button id="clear-search" class="clear-btn" style="display: none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Header Actions: Join Telegram, WhatsApp & Language Selector -->
+      <div class="nav-actions">
+        <!-- Join Telegram Button -->
+        <a href="https://t.me/" id="header-telegram-btn" target="_blank" rel="noopener noreferrer" class="btn-social-telegram" title="Join Telegram Channel">
+          <i class="fa-brands fa-telegram"></i>
+          <span>Join Telegram</span>
+        </a>
+
+        <!-- Join WhatsApp Button -->
+        <a href="https://whatsapp.com/" id="header-whatsapp-btn" target="_blank" rel="noopener noreferrer" class="btn-social-whatsapp" title="Join WhatsApp Channel">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>Join WhatsApp</span>
+        </a>
+
+        <!-- Language Selector Dropdown (Visitor Switcher) -->
+        <div class="lang-selector-wrap" title="Change Language">
+          <i class="fa-solid fa-globe lang-globe-icon"></i>
+          <select id="site-lang-select" class="site-lang-dropdown" aria-label="Select Language">
+            <option value="en">English</option>
+            <option value="bn">বাংলা</option>
+            <option value="hi">हिन्दी</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- 1. Top Header Banner Ad Slot (First) -->
+    <div class="ad-slot-wrapper" id="ad-slot-top-banner"></div>
+
+    <!-- Top 5 Categories / Labels Navigation Bar -->
+    <section class="categories-bar">
+      <div class="categories-scroll" id="categories-container">
+        <!-- Rendered dynamically by script.js with live updated label names -->
+      </div>
+    </section>
+
+    <!-- Recent Videos / Posts Section -->
+    <section class="feed-section" id="recent-section">
+      <div class="section-title-bar">
+        <div class="title-with-pill">
+          <span class="hot-badge">RECENT</span>
+          <h2 class="title-text">Recent Videos / Uploads</h2>
+        </div>
+        <span class="meta-note">Latest 5 uploaded videos</span>
+      </div>
+
+      <!-- Grid with Play Button Overlays, Title, Label & Real Views -->
+      <div class="posts-grid" id="recent-posts-grid">
+        <!-- Rendered by script.js -->
+      </div>
+    </section>
+
+    <!-- 2. Native Banner Ad Slot (Between Recent & All Videos) -->
+    <div class="ad-slot-wrapper" id="ad-slot-native-banner"></div>
+
+    <!-- All Videos Section -->
+    <section class="feed-section">
+      <div class="section-title-bar">
+        <div class="title-with-pill">
+          <h2 class="title-text" id="category-title">All Videos Collection</h2>
+        </div>
+        <span class="count-tag" id="posts-count-tag">5 Videos</span>
+      </div>
+
+      <div class="posts-grid" id="all-posts-grid">
+        <!-- Rendered by script.js -->
+      </div>
+    </section>
+
+    <!-- 3. Bottom Banner Ad Slot (End of Feed) -->
+    <div class="ad-slot-wrapper" id="ad-slot-bottom-banner"></div>
+  </main>
+
+  <!-- Big Video/Image Preview Modal -->
+  <div class="image-modal-backdrop" id="image-modal">
+    <div class="image-modal-box">
+      <button class="modal-close-btn" id="close-image-modal" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-image-wrapper">
+        <img src="" alt="" id="modal-full-image">
+        <div class="modal-play-badge" title="Playing">
+          <i class="fa-solid fa-circle-play"></i>
+        </div>
+      </div>
+
+      <div class="modal-details-bar">
+        <div class="modal-left">
+          <div class="modal-label-tag" id="modal-label-display">
+            <i class="fa-solid fa-tag"></i> <span id="modal-label-name">Category</span>
+          </div>
+
+          <h2 class="modal-post-title" id="modal-post-title">Video Title</h2>
+          
+          <div class="modal-views-badge">
+            <span class="live-dot"></span>
+            <i class="fa-solid fa-eye" style="font-size:0.9rem;margin-right:4px;"></i>
+            <strong id="modal-view-count">&#x09e6;</strong>
+            <span style="margin-left:4px;">Views</span>
+          </div>
+        </div>
+
+        <!-- 2-Step Ads Lock & Unlock Controls -->
+        <div class="modal-monetization-wrap">
+          <div class="ad-unlock-notice" id="ad-unlock-notice">
+            <div class="ad-notice-info">
+              <span class="ad-lock-badge" id="ad-lock-badge"><i class="fa-solid fa-lock"></i> Locked</span>
+              <span class="ad-notice-text" id="ad-status-msg">Watch 2 ads to unlock the download button</span>
+            </div>
+            <div class="ad-steps-pills">
+              <span class="step-pill active" id="step-1-pill">1st Ad</span>
+              <span class="step-pill" id="step-2-pill">2nd Ad</span>
+              <span class="step-pill" id="step-timer-pill">15s Wait</span>
+            </div>
+          </div>
+
+          <div class="modal-right-actions">
+            <!-- Share Button -->
+            <button id="modal-share-btn" class="btn-action-share" title="Share or copy post link">
+              <i class="fa-solid fa-share-nodes"></i>
+              <span>Share</span>
+            </button>
+
+            <!-- Watch / Ad Button -->
+            <button id="modal-watch-btn" class="btn-action-watch">
+              <i class="fa-solid fa-play"></i>
+              <span id="watch-btn-text">Watch</span>
+            </button>
+
+            <!-- Continue / Download Button -->
+            <a id="modal-continue-btn" class="btn-action-continue" href="javascript:void(0)" target="_blank" rel="noopener noreferrer" style="pointer-events: none; opacity: 0.6;" title="Unlock link after 2 ads">
+              <i class="fa-solid fa-arrow-right"></i>
+              <span id="continue-btn-text">Continue</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Video/Image Modal -->
+  <div class="add-modal-backdrop" id="add-modal">
+    <div class="add-modal-box">
+      <div class="add-modal-header">
+        <h3><i class="fa-solid fa-plus-circle"></i> Add New Video / Image</h3>
+        <button class="close-add-modal" id="close-add-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="add-post-form" class="add-form">
+        <div class="form-field">
+          <label for="post-title-input">Video Title <span class="req">*</span></label>
+          <input type="text" id="post-title-input" placeholder="e.g. Action Movie Clip 2026" required>
+        </div>
+
+        <div class="form-field">
+          <label for="post-img-input">Direct Image Link (URL) <span class="req">*</span></label>
+          <input type="url" id="post-img-input" placeholder="https://i.ibb.co.com/..." required>
+        </div>
+
+        <div class="form-field">
+          <label for="post-download-input">Video / Download Link (Download Link)</label>
+          <input type="url" id="post-download-input" placeholder="https://t.me/pureads_bot?start=... or link">
+        </div>
+
+        <div class="form-field">
+          <label for="post-cat-input">Select Category / Label <span class="req">*</span></label>
+          <select id="post-cat-input" required>
+            <!-- Dynamically populated with current 4 labels -->
+          </select>
+        </div>
+
+        <div class="add-form-footer">
+          <button type="button" class="btn-cancel" id="cancel-add-btn">Cancel</button>
+          <button type="submit" class="btn-submit">Add Video</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Manage / Rename Labels Modal (লেবেল নাম পরিবর্তন করুন) -->
+  <div class="add-modal-backdrop" id="labels-modal">
+    <div class="add-modal-box">
+      <div class="add-modal-header">
+        <h3><i class="fa-solid fa-tags"></i> Rename Labels / Categories</h3>
+        <button class="close-add-modal" id="close-labels-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p class="modal-help-text">
+        Renaming any label will automatically sync across the category bar and all videos!
+      </p>
+
+      <form id="edit-labels-form" class="add-form">
+        <div class="form-field">
+          <label for="label-name-2">Label 2 Name</label>
+          <input type="text" id="label-name-2" required>
+        </div>
+
+        <div class="form-field">
+          <label for="label-name-3">Label 3 Name</label>
+          <input type="text" id="label-name-3" required>
+        </div>
+
+        <div class="form-field">
+          <label for="label-name-4">Label 4 Name</label>
+          <input type="text" id="label-name-4" required>
+        </div>
+
+        <div class="form-field">
+          <label for="label-name-5">Label 5 Name</label>
+          <input type="text" id="label-name-5" required>
+        </div>
+
+        <div class="add-form-footer">
+          <button type="button" class="btn-cancel" id="cancel-labels-btn">Cancel</button>
+          <button type="submit" class="btn-submit">Save Label Names</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5-Second Telegram Join Popup Modal -->
+  <div class="tg-popup-backdrop" id="tg-popup-modal" style="display: none;">
+    <div class="tg-popup-card">
+      <button class="tg-popup-close" id="tg-popup-close-btn" title="বন্ধ করুন">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="tg-popup-icon-wrap">
+        <i class="fa-brands fa-telegram"></i>
+      </div>
+
+      <h3 class="tg-popup-title">Join Our Telegram Channel!</h3>
+      <p class="tg-popup-subtitle">Get the latest video updates, special links, and direct downloads first by joining our official Telegram channel.</p>
+
+      <a href="https://t.me/" target="_blank" rel="noopener noreferrer" class="btn-tg-popup-join" id="tg-popup-join-btn">
+        <i class="fa-brands fa-telegram"></i>
+        <span>Join Telegram Channel</span>
+      </a>
+
+      <!-- Hardcoded Developer Credit (Fixed & Non-editable from dashboard) -->
+      <div class="tg-popup-credit">
+        <span>Developer Credit :</span>
+        <a href="https://t.me/developercredit_bot" target="_blank" rel="noopener noreferrer">https://t.me/developercredit_bot</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-message" id="toast-message">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toast-text">Notification</span>
+  </div>
+
+  <script defer src="script.js"></script>
+</body>
+</html>
+

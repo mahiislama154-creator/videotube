@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাডমিন ড্যাশবোর্ড | Admin Control Panel</title>
+  <meta name="description" content="ভিডিও পোর্টাল অ্যাডমিন ড্যাশবোর্ড - পোস্ট ম্যানেজমেন্ট, রিয়েল ভিউ নিয়ন্ত্রণ এবং ক্লাউড ডাটাবেজ সেটিংস।">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Login Gate Screen -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-card">
+      <div class="login-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h2>অ্যাডমিন লগইন</h2>
+      <p>ড্যাশবোর্ডে প্রবেশ করতে সিকিউরিটি পাসওয়ার্ড দিন</p>
+      
+      <form id="admin-login-form">
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="admin-password-input" placeholder="পাসওয়ার্ড লিখুন..." required autocomplete="current-password">
+        </div>
+        <span class="error-msg" id="login-error-msg"></span>
+        <button type="submit" class="btn-login">লগইন করুন</button>
+      </form>
+      <div class="login-hint">
+        ডিফল্ট পাসওয়ার্ড: <code>admin123</code> (ভেতরে গিয়ে পরিবর্তন করতে পারবেন)
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Layout -->
+  <div class="admin-layout" id="admin-dashboard-app" style="display: none;">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-box"><i class="fa-solid fa-play"></i></div>
+        <div class="brand-text">
+          <h3 id="admin-sidebar-site-name">ভিডিও<span>পোর্টাল</span></h3>
+          <span>Admin Control</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="overview">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>ওভারভিউ ও অ্যানালিটিক্স</span>
+        </button>
+        <button class="nav-item" data-tab="manage-videos">
+          <i class="fa-solid fa-film"></i>
+          <span>সকল ভিডিও / পোস্ট</span>
+        </button>
+        <button class="nav-item" data-tab="add-video">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>নতুন ভিডিও যুক্ত করুন</span>
+        </button>
+        <button class="nav-item" data-tab="categories">
+          <i class="fa-solid fa-tags"></i>
+          <span>ক্যাটাগরি ম্যানেজমেন্ট</span>
+        </button>
+        <button class="nav-item" data-tab="social-links">
+          <i class="fa-brands fa-telegram"></i>
+          <span>টেলিগ্রাম ও হোয়াটসঅ্যাপ</span>
+        </button>
+        <button class="nav-item" data-tab="ad-settings">
+          <i class="fa-solid fa-rectangle-ad"></i>
+          <span>অ্যাড লিংক সেটিংস</span>
+        </button>
+        <button class="nav-item" data-tab="cloud-db">
+          <i class="fa-solid fa-database"></i>
+          <span>অনলাইন ডাটাবেজ</span>
+        </button>
+        <button class="nav-item" data-tab="themes">
+          <i class="fa-solid fa-palette"></i>
+          <span>ওয়েবসাইট থিম</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <i class="fa-solid fa-gear"></i>
+          <span>সেটিংস ও পাসওয়ার্ড</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="index.html" class="btn-view-live" target="_blank">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span>লাইভ সাইট দেখুন</span>
+        </a>
+        <button class="btn-logout" id="admin-logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>লগআউট</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Admin Content Area -->
+    <main class="admin-main">
+      <!-- Top Bar -->
+      <header class="admin-topbar">
+        <div class="topbar-title-wrap">
+          <h2 id="page-title">ওভারভিউ ও অ্যানালিটিক্স</h2>
+          <span class="online-sync-badge" id="sync-status-badge">
+            <span class="pulse-dot"></span>
+            <span>ক্লাউড ডাটাবেজ সক্রিয়</span>
+          </span>
+        </div>
+
+        <div class="topbar-actions">
+          <a href="index.html" class="btn-top-live">
+            <i class="fa-solid fa-globe"></i>
+            <span>ওয়েবসাইটে যান</span>
+          </a>
+          <div class="admin-profile-pill">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>অ্যাডমিন</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="admin-container">
+        <!-- 1. OVERVIEW TAB -->
+        <section class="tab-pane active" id="tab-overview">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon icon-cyan"><i class="fa-solid fa-calendar-day"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">আজকের ভিউজ (Today's Views)</span>
+                <strong class="stat-value" id="stat-today-views">০</strong>
+                <span class="stat-meta" id="stat-today-meta">রাত ১২টায় রিসেট হবে</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-teal"><i class="fa-solid fa-chart-line"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">বিগত ৭ দিনের ভিউজ (Last 7 Days)</span>
+                <strong class="stat-value" id="stat-last7days-views">০</strong>
+                <span class="stat-meta">গত ৭ দিনের সর্বমোট ভিউ</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-blue"><i class="fa-solid fa-film"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">মোট ভিডিও / পোস্ট</span>
+                <strong class="stat-value" id="stat-total-posts">০</strong>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-green"><i class="fa-solid fa-eye"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">সর্বমোট ভিউজ (All-Time Views)</span>
+                <strong class="stat-value" id="stat-total-views">০</strong>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-purple"><i class="fa-solid fa-tags"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">সক্রিয় ক্যাটাগরি / লেবেল</span>
+                <strong class="stat-value" id="stat-total-categories">৫টি</strong>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon icon-orange"><i class="fa-solid fa-fire"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">সর্বোচ্চ ভিউ হওয়া ভিডিও</span>
+                <strong class="stat-value" id="stat-top-video-name">-</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Last 7 Days Daily Breakdown -->
+          <div class="card-box mt-4">
+            <div class="card-box-header space-between">
+              <div>
+                <h3><i class="fa-solid fa-chart-simple" style="color: #22d3ee;"></i> বিগত ৭ দিনের দৈনিক ভিউজ রিপোর্ট (Daily History)</h3>
+                <p class="sub-text">প্রতিদিন রাত ১২:০০ টায় আজকের ভিউ স্বয়ংক্রিয়ভাবে ০ থেকে নতুন দিনের জন্য শুরু হয় এবং পেছনের দিনগুলোর হিসাব এখানে সংরক্ষিত থাকে।</p>
+              </div>
+              <span class="badge-pill-cyan"><i class="fa-solid fa-clock-rotate-left"></i> রাত ১২টায় রিসেট</span>
+            </div>
+
+            <div class="daily-breakdown-grid" id="daily-views-breakdown-list">
+              <!-- Dynamically populated by admin.js -->
+            </div>
+          </div>
+
+          <!-- Quick Action Row -->
+          <div class="card-box mt-4">
+            <div class="card-box-header">
+              <h3><i class="fa-solid fa-bolt"></i> দ্রুত নিয়ন্ত্রণ ও অ্যাকশন</h3>
+            </div>
+            <div class="quick-actions-row">
+              <button class="quick-btn" onclick="switchTab('add-video')">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>নতুন ভিডিও পোস্ট করুন</span>
+              </button>
+              <button class="quick-btn" onclick="switchTab('categories')">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>ক্যাটাগরি নাম পরিবর্তন করুন</span>
+              </button>
+              <button class="quick-btn" onclick="switchTab('cloud-db')">
+                <i class="fa-solid fa-cloud"></i>
+                <span>অনলাইন ক্লাউড ডাটাবেজ চেক</span>
+              </button>
+              <button class="quick-btn danger" id="btn-reset-all-views-admin">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>সব ভিডিওর ভিউ ০ করুন</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. MANAGE VIDEOS TAB -->
+        <section class="tab-pane" id="tab-manage-videos">
+          <div class="card-box">
+            <div class="card-box-header space-between">
+              <div>
+                <h3><i class="fa-solid fa-list-check"></i> ভিডিও তালিকা ও পূর্ণ নিয়ন্ত্রণ</h3>
+                <p class="sub-text">এখান থেকে যেকোনো ভিডিওর ভিউ সংখ্যা বাড়াতে/কমাতে পারবেন, টাইটেল পরিবর্তন ও ডিলিট করতে পারবেন।</p>
+              </div>
+              <button class="btn-primary" onclick="switchTab('add-video')">
+                <i class="fa-solid fa-plus"></i> নতুন ভিডিও
+              </button>
+            </div>
+
+            <!-- Filter & Search Bar -->
+            <div class="table-toolbar">
+              <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="admin-search-video" placeholder="ভিডিও খুঁজুন...">
+              </div>
+
+              <select id="admin-filter-category">
+                <option value="all">সকল ক্যাটাগরি</option>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>থাম্বনেইল</th>
+                    <th>ভিডিও টাইটেল</th>
+                    <th>লেবেল / ক্যাটাগরি</th>
+                    <th>বর্তমান ভিউ সংখ্যা</th>
+                    <th>ভিউ নিয়ন্ত্রণ</th>
+                    <th>অ্যাকশন</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-videos-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. ADD NEW VIDEO TAB -->
+        <section class="tab-pane" id="tab-add-video">
+          <div class="card-box max-w-700">
+            <div class="card-box-header">
+              <h3><i class="fa-solid fa-plus-circle"></i> নতুন ভিডিও / ইমেজ আপলোড</h3>
+              <p class="sub-text">ইমেজের লিঙ্ক ও টাইটেল দিয়ে যেকোনো লেবেলে যুক্ত করুন। সাথে সাথে ওয়েবসাইটে প্লে বাটনসহ লাইভ হয়ে যাবে।</p>
+            </div>
+
+            <form id="admin-add-video-form" class="admin-form">
+              <div class="form-group">
+                <label for="new-video-title">ভিডিওর টাইটেল <span class="req">*</span></label>
+                <input type="text" id="new-video-title" placeholder="ভিডিওর আকর্ষণীয় টাইটেল দিন..." required>
+              </div>
+
+              <div class="form-group">
+                <label for="new-video-url">ইমেজ বা থাম্বনেইল ডিরেক্ট লিঙ্ক (URL) <span class="req">*</span></label>
+                <input type="url" id="new-video-url" placeholder="https://i.ibb.co.com/..." required>
+                <span class="help-text">যেকোনো ইমেজ হোস্টিং লিঙ্ক (ImgBB, Cloudinary বা সরাসরি ছবির লিঙ্ক)।</span>
+              </div>
+
+              <div class="form-group">
+                <label for="new-video-category">লেবেল / ক্যাটাগরি নির্বাচন করুন <span class="req">*</span></label>
+                <select id="new-video-category" required>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="new-video-download-url">ভিডিও / ডাউনলোড লিংক (Download URL)</label>
+                <input type="url" id="new-video-download-url" placeholder="https://drive.google.com/... বা মেগা/ইউটিউব লিংক">
+                <span class="help-text">২টি অ্যাড এবং ১৫ সেকেন্ড অপেক্ষার পর ইউজার এই নির্দিষ্ট ডাউনলোড লিংকটি পাবে।</span>
+              </div>
+
+              <div class="form-group">
+                <label for="new-video-initial-views">শুরুর ভিউ সংখ্যা (ঐচ্ছিক)</label>
+                <input type="number" id="new-video-initial-views" value="0" min="0">
+                <span class="help-text">০ দিলে একদম ০ থেকে শুরু হবে, বা আপনার পছন্দের যেকোনো সংখ্যা দিতে পারেন।</span>
+              </div>
+
+              <button type="submit" class="btn-submit-form">
+                <i class="fa-solid fa-check"></i>
+                <span>ওয়েবসাইটে পাবলিশ করুন</span>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- 4. CATEGORIES / LABELS MANAGEMENT TAB -->
+        <section class="tab-pane" id="tab-categories">
+          <div class="categories-manage-grid">
+            <!-- Left: Add New Category Card -->
+            <div class="card-box">
+              <div class="card-box-header">
+                <h3><i class="fa-solid fa-folder-plus" style="color: #38bdf8;"></i> নতুন ক্যাটাগরি তৈরি করুন</h3>
+                <p class="sub-text">এখানে আপনার ইচ্ছামতো যত খুশি নতুন ক্যাটাগরি যোগ করতে পারবেন। এটি সাথে সাথে মূল সাইটে চলে যাবে।</p>
+              </div>
+
+              <form id="admin-add-category-form" class="admin-form">
+                <div class="form-group">
+                  <label for="admin-new-cat-name">ক্যাটাগরির নাম <span class="req">*</span></label>
+                  <input type="text" id="admin-new-cat-name" placeholder="যেমন: ফানি ভিডিও / নাটক / মুভি ট্রেলার..." required>
+                </div>
+
+                <div class="form-group">
+                  <label for="admin-new-cat-icon">ক্যাটাগরি আইকন</label>
+                  <select id="admin-new-cat-icon">
+                    <option value="fa-tags">🏷️ ট্যাগ / সাধারণ (Tags)</option>
+                    <option value="fa-film">🎬 সিনেমা / ভিডিও (Film)</option>
+                    <option value="fa-fire">🔥 ভাইরাল / ট্রেন্ডিং (Trending)</option>
+                    <option value="fa-face-laugh-squint">😂 ফানি / কমেডি (Comedy)</option>
+                    <option value="fa-music">🎵 গান / মিউজিক (Music)</option>
+                    <option value="fa-gamepad">🎮 গেমিং (Gaming)</option>
+                    <option value="fa-camera">📸 ফটোগ্রাফি (Photography)</option>
+                    <option value="fa-palette">🎨 গ্রাফিক্স / ডিজাইন (Design)</option>
+                    <option value="fa-share-nodes">🌐 সোশ্যাল মিডিয়া (Social)</option>
+                    <option value="fa-layer-group">📑 ব্যানার ও থাম্বনেইল (Banners)</option>
+                    <option value="fa-mobile-screen">📱 মোবাইল / টেক (Mobile)</option>
+                    <option value="fa-graduation-cap">🎓 শিক্ষা / টিউটোরিয়াল (Education)</option>
+                    <option value="fa-newspaper">📰 খবর / নিউজ (News)</option>
+                    <option value="fa-star">⭐ স্পেশাল / এক্সক্লুসিভ (Special)</option>
+                    <option value="fa-heart">❤️ লাভ / রোমান্টিক (Heart)</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="btn-submit-form">
+                  <i class="fa-solid fa-plus"></i>
+                  <span>ক্যাটাগরি যুক্ত করুন</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Right: All Categories List -->
+            <div class="card-box">
+              <div class="card-box-header space-between">
+                <div>
+                  <h3><i class="fa-solid fa-list-check" style="color: #10b981;"></i> বর্তমান ক্যাটাগরি তালিকা</h3>
+                  <p class="sub-text">এখান থেকে যেকোনো ক্যাটাগরির নাম ও আইকন এডিট করতে পারবেন অথবা ডিলিট করতে পারবেন।</p>
+                </div>
+                <span class="badge-pill-cyan" id="total-cats-badge">৫টি ক্যাটাগরি</span>
+              </div>
+
+              <div id="admin-categories-list" class="cat-manage-list">
+                <!-- Dynamically rendered by admin.js -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+                <!-- 5. ONLINE CLOUD DATABASE TAB (Supabase Integration) -->
+        <section class="tab-pane" id="tab-cloud-db">
+          <div class="card-box">
+            <div class="card-box-header">
+              <h3><i class="fa-solid fa-cloud" style="color: #38bdf8;"></i> সুপাবেস ক্লাউড ডাটাবেজ (Supabase Cloud Sync)</h3>
+              <p class="sub-text">অ্যাডমিন থেকে নতুন ভিডিও, ক্যাটাগরি বা অ্যাডস যোগ করলে তা সরাসরি Supabase ক্লাউডে সেভ হবে এবং বিশ্বের যেকোনো ডিভাইস, ব্লগার বা টেলিগ্রাম মিনি অ্যাপ থেকে সাথে সাথে রিয়েল-টাইম দেখা যাবে।</p>
+            </div>
+
+            <div class="cloud-status-card">
+              <div class="cloud-status-header">
+                <div class="cloud-status-left">
+                  <div class="cloud-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.4);"><i class="fa-solid fa-database"></i></div>
+                  <div>
+                    <h4>সুপাবেস PostgreSQL ক্লাউড ইঞ্জিন</h4>
+                    <span class="status-live-text" style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> কানেক্টেড ও সক্রিয় (Live Active)</span>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button class="btn-test-sync" id="btn-test-cloud-sync">
+                    <i class="fa-solid fa-rotate"></i> টেস্ট সিঙ্ক
+                  </button>
+                  <button class="btn-test-sync" id="btn-force-upload-cloud" style="background: #1e293b; color: #38bdf8; border-color: #38bdf8;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> লোকাল ডাটা ক্লাউডে আপলোড
+                  </button>
+                </div>
+              </div>
+              <p class="cloud-desc">
+                আপনার Supabase প্রজেক্ট <code>https://ukiatcxfsaexijumkmmp.supabase.co</code> এর সাথে সফলভাবে কানেক্টেড। টেবিল: <code>site_data</code>।
+              </p>
+            </div>
+
+            <!-- Supabase Config Status Box -->
+            <div class="firebase-box mt-4">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+                <div>
+                  <h4 style="margin: 0;"><i class="fa-solid fa-sliders" style="color: #38bdf8;"></i> সুপাবেস ক্লাউড কনফিগারেশন</h4>
+                  <p class="sub-text" style="margin: 4px 0 0;">নিচে আপনার সক্রিয় Supabase প্রজেক্ট ডিটেইলস সংযুক্ত রয়েছে:</p>
+                </div>
+                <div id="supabase-action-buttons">
+                  <button type="button" id="btn-unlock-supabase" onclick="openSupabasePwdModal()" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>এডিট কনফিগারেশন</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Unlocked alert banner -->
+              <div id="supabase-unlocked-banner" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; color: #fca5a5; font-size: 0.88rem; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-lock-open" style="color: #ef4444;"></i>
+                <span><strong>কনফিগারেশন আনলকড!</strong> URL ও Key পরিবর্তন শেষে নিচে 'কনফিগারেশন সেভ করুন' বাটনে চাপ দিন।</span>
+              </div>
+
+              <div class="form-group mt-3">
+                <label>Supabase Project URL</label>
+                <input type="password" id="supabase-url-display" value="https://ukiatcxfsaexijumkmmp.supabase.co" readonly style="opacity: 0.85; cursor: default;">
+              </div>
+
+              <div class="form-group mt-3">
+                <label>Supabase Publishable Key (Anon)</label>
+                <input type="password" id="supabase-key-display" value="sb_publishable_dh42yd8wpCQ-FECb12CRpA__KU4xG-y" readonly style="opacity: 0.85; cursor: default;">
+                <span class="help-text">স্টেটাস: আরএলএস এনাবল্ড (Row Level Security Active) এবং পাবলিক রিড/রাইট পলিসি কার্যকর।</span>
+              </div>
+
+              <!-- Save/Cancel buttons when unlocked -->
+              <div id="supabase-save-controls" style="display: none; margin-top: 16px; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="cancelSupabaseEdit()" style="padding: 9px 18px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; font-weight: 600;">
+                  <i class="fa-solid fa-xmark"></i> বাতিল
+                </button>
+                <button type="button" onclick="saveSupabaseConfig()" style="padding: 9px 20px; border-radius: 8px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                  <i class="fa-solid fa-floppy-disk"></i> কনফিগারেশন সেভ করুন
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. ADS & MONETIZATION SETTINGS TAB (Adsterra & Monetag) -->
+        <section class="tab-pane" id="tab-ad-settings">
+          <div class="card-box max-w-700">
+            <div class="card-box-header">
+              <h3><i class="fa-solid fa-rectangle-ad"></i> বিজ্ঞাপন ও মনিটাইজেশন সেটিংস (Adsterra / Monetag)</h3>
+              <p class="sub-text">Adsterra, Monetag বা যেকোনো অ্যাড নেটওয়ার্কের ব্যানার, নেটিভ, পপআন্ডার ও সোশ্যাল বার কোড এখানে দিন। কোড না দিলে ওয়েবসাইটে কোনো খালি জায়গা বা টেক্সট থাকবে না।</p>
+            </div>
+
+            <form id="admin-ad-settings-form" class="admin-form" onsubmit="saveAdSettings(event)">
+              <!-- 1. Top Header Banner -->
+              <div class="form-group">
+                <label for="admin-ad-top-banner">
+                  <i class="fa-solid fa-image" style="color: #38bdf8;"></i> ১. প্রথম শীর্ষ ব্যানার অ্যাড (Top Header Banner - 728x90 বা 320x50)
+                </label>
+                <textarea id="admin-ad-top-banner" rows="3" placeholder="Adsterra / Monetag Banner JS কোড বা iframe কোড এখানে পেস্ট করুন..."></textarea>
+                <span class="help-text">ওয়েবসাইটের একদম উপরে (First) এই ব্যানার অ্যাডটি প্রদর্শিত হবে। খালি রাখলে কোনো ফাঁকা জায়গা থাকবে না।</span>
+              </div>
+
+              <!-- 2. Native Banner Ad -->
+              <div class="form-group">
+                <label for="admin-ad-native">
+                  <i class="fa-solid fa-rectangle-list" style="color: #a855f7;"></i> ২. নেটিভ ব্যানার অ্যাড (Native Banner Ad Code)
+                </label>
+                <textarea id="admin-ad-native" rows="3" placeholder="Adsterra / Monetag Native Banner Ad কোড..."></textarea>
+                <span class="help-text">রিসেন্ট ভিডিও এবং সকল ভিডিও কালেকশন সেকশনের মাঝে প্রদর্শিত হবে।</span>
+              </div>
+
+              <!-- 3. Popunder Ad -->
+              <div class="form-group">
+                <label for="admin-ad-popunder">
+                  <i class="fa-solid fa-arrow-up-right-from-square" style="color: #f59e0b;"></i> ৩. পপআন্ডার অ্যাড কোড (Popunder Ad Code)
+                </label>
+                <textarea id="admin-ad-popunder" rows="3" placeholder="<script type='text/javascript' src='//...'></script>"></textarea>
+                <span class="help-text">ইউজার ওয়েবসাইটে যেকোনো জায়গায় প্রথম ক্লিকে নতুন উইন্ডোতে পপআন্ডার অ্যাড ওপেন হবে।</span>
+              </div>
+
+              <!-- 4. Social Bar Ad -->
+              <div class="form-group">
+                <label for="admin-ad-socialbar">
+                  <i class="fa-solid fa-bell" style="color: #ef4444;"></i> ৪. সোশ্যাল বার অ্যাড কোড (Social Bar / In-Page Push Code)
+                </label>
+                <textarea id="admin-ad-socialbar" rows="3" placeholder="Adsterra Social Bar JS কোড এখানে পেস্ট করুন..."></textarea>
+                <span class="help-text">স্ক্রিনের নিচে বা ডানপাশে ভাসমান নোটিফিকেশন বার আকারে বিজ্ঞাপন শো করবে।</span>
+              </div>
+
+              <!-- 5. Bottom Banner Ad -->
+              <div class="form-group">
+                <label for="admin-ad-bottom-banner">
+                  <i class="fa-solid fa-window-maximize" style="color: #10b981;"></i> ৫. নিচের ফুটার ব্যানার অ্যাড (Bottom Banner - 728x90 বা 300x250)
+                </label>
+                <textarea id="admin-ad-bottom-banner" rows="3" placeholder="Bottom Banner Ad স্ক্রিপ্ট বা কোড..."></textarea>
+                <span class="help-text">ভিডিও তালিকার একদম নিচে এই ব্যানার বিজ্ঞাপনটি শো করবে।</span>
+              </div>
+
+              <div class="divider-line my-4" style="height: 1px; background: #334155; margin: 20px 0;"></div>
+
+              <h4 style="color: #38bdf8; margin-bottom: 12px;">
+                <i class="fa-solid fa-circle-play"></i> ভিডিও ডাউনলোডের ২-টি ওয়াচ অ্যাড লিংক (Direct Link / Smartlink)
+              </h4>
+
+              <!-- 6. Watch Ad 1 -->
+              <div class="form-group">
+                <label for="admin-ad-link-1">১ম অ্যাড লিংক (Ad Link 1 / Direct Link)</label>
+                <input type="url" id="admin-ad-link-1" placeholder="https://adnetwork-directlink-1.com/... (ঐচ্ছিক)">
+                <span class="help-text">প্রথমবার Watch বাটনে চাপ দিলে এই ডিরেক্ট অ্যাড লিংকটি নতুন ট্যাবে ওপেন হবে। না দিলে ১ম অ্যাড স্ক্রিপ্ট স্কিপ হবে।</span>
+              </div>
+
+              <!-- 7. Watch Ad 2 -->
+              <div class="form-group">
+                <label for="admin-ad-link-2">২য় অ্যাড লিংক (Ad Link 2 / Direct Link)</label>
+                <input type="url" id="admin-ad-link-2" placeholder="https://adnetwork-directlink-2.com/... (ঐচ্ছিক)">
+                <span class="help-text">দ্বিতীয়বার Watch বাটনে চাপ দিলে এই ডিরেক্ট অ্যাড লিংকটি নতুন ট্যাবে ওপেন হবে। না দিলে ২য় অ্যাড লাগবে না।</span>
+              </div>
+
+              <!-- 8. Countdown Timer -->
+              <div class="form-group">
+                <label for="admin-timer-seconds">অ্যাড দেখার পর অপেক্ষা করার সময় (সেকেন্ড)</label>
+                <input type="number" id="admin-timer-seconds" value="5" min="3" max="60" required>
+                <span class="help-text">ডিফল্ট ৫ বা ১৫ সেকেন্ড। সময় শেষ হলে স্বয়ংক্রিয়ভাবে ডাউনলোড বাটন দৃশ্যমান হবে।</span>
+              </div>
+
+              <button type="submit" class="btn-submit-form" style="margin-top: 15px;">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>সকল অ্যাড সেটিংস সেভ করুন ও লাইভ আপডেট করুন</span>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- 7. SOCIAL LINKS (TELEGRAM & WHATSAPP) TAB -->
+        <section class="tab-pane" id="tab-social-links">
+          <div class="card-box max-w-700">
+            <div class="card-box-header">
+              <h3><i class="fa-brands fa-telegram" style="color: #229ed9;"></i> টেলিগ্রাম ও হোয়াটসঅ্যাপ লিংক সেটিংস</h3>
+              <p class="sub-text">ওয়েবসাইটের উপরে থাকা "Join Telegram" এবং "Join WhatsApp" বাটনের লিংক এখান থেকে নিয়ন্ত্রণ করুন।</p>
+            </div>
+
+            <form id="admin-social-links-form" class="admin-form" onsubmit="saveSocialLinks(event)">
+              <div class="form-group">
+                <label for="admin-telegram-link">
+                  <i class="fa-brands fa-telegram" style="color: #229ed9;"></i> টেলিগ্রাম চ্যানেল / গ্রুপ লিংক (ওয়েবসাইট ও ৫-সেকেন্ড পপআপের জন্য) <span class="req">*</span>
+                </label>
+                <input type="text" id="admin-telegram-link" placeholder="https://t.me/your_channel_name" required>
+                <span class="help-text">ওয়েবসাইটের হেডার বাটন এবং ৫ সেকেন্ড পর ভেসে ওঠা আকর্ষণীয় পপআপের "Join Telegram" বাটনে এই লিংকটি কাজ করবে। (যেমন: https://t.me/your_link বা @username)</span>
+              </div>
+
+              <div class="form-group">
+                <label for="admin-whatsapp-link">
+                  <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> হোয়াটসঅ্যাপ গ্রুপ / চ্যানেল লিংক
+                </label>
+                <input type="text" id="admin-whatsapp-link" placeholder="https://chat.whatsapp.com/... (ঐচ্ছিক)">
+                <span class="help-text">ভিজিটর "Join WhatsApp" বাটনে চাপ দিলে সরাসরি এই লিংকে চলে যাবে।</span>
+              </div>
+
+              <button type="submit" class="btn-submit-form" id="btn-save-social-links" onclick="saveSocialLinks(event)">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>সোশ্যাল লিংক সেভ করুন</span>
+              </button>
+
+              <div style="margin-top: 14px; padding: 12px 14px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-shield-halved" style="color: #38bdf8;"></i>
+                <span>পপআপের ডেভেলপার ক্রেডিট (Developer Credit: <strong style="color: #38bdf8;">https://t.me/developercredit_bot</strong>) অপরিবর্তনযোগ্য ও সুরক্ষিত রয়েছে।</span>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 8. WEBSITE THEMES TAB (10 Premium Themes + Live Preview) -->
+        <section class="tab-pane" id="tab-themes">
+          <div class="themes-layout-grid">
+            <!-- Left: 10 Selectable Theme Cards -->
+            <div class="card-box themes-selection-box">
+              <div class="card-box-header">
+                <h3><i class="fa-solid fa-palette" style="color: #38bdf8;"></i> ১০টি প্রিমিয়াম ওয়েবসাইট থিম</h3>
+                <p class="sub-text">যেকোনো থিমে ক্লিক করে পাশের লাইভ প্রিভিউ দেখুন। পছন্দের থিম সিলেক্ট করে সেভ করুন।</p>
+              </div>
+
+              <div class="theme-cards-list">
+                <!-- Theme 1 -->
+                <div class="theme-select-card active" data-theme-key="theme-red" onclick="selectTheme('theme-red')">
+                  <div class="theme-card-radio"><i class="fa-solid fa-circle-check"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">১. ইউটিউব রেড & ডার্ক (Classic Red)</div>
+                    <div class="theme-card-desc">ক্লাসিক ডার্ক ব্যাকগ্রাউন্ড, ভাইব্রেন্ট রেড বাটন ও সায়ান অ্যাকসেন্ট।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #ef4444;" title="Red Accent"></span>
+                    <span style="background: #3ea6ff;" title="Cyan Views"></span>
+                    <span style="background: #181818;" title="Surface"></span>
+                    <span style="background: #0f0f0f;" title="Dark BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 2 -->
+                <div class="theme-select-card" data-theme-key="theme-cyan" onclick="selectTheme('theme-cyan')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">২. নিয়ন সায়ান ও ওশান ব্লু (Neon Cyan)</div>
+                    <div class="theme-card-desc">ডিপ নেভি ব্লু ব্যাকগ্রাউন্ড ও উজ্জ্বল গ্লোয়িং নিয়ন সায়ান বাটন।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #06b6d4;" title="Neon Cyan"></span>
+                    <span style="background: #0ea5e9;" title="Ocean Blue"></span>
+                    <span style="background: #0f1f38;" title="Navy Surface"></span>
+                    <span style="background: #070d19;" title="Deep BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 3 -->
+                <div class="theme-select-card" data-theme-key="theme-green" onclick="selectTheme('theme-green')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">৩. এমারেল্ড গ্রিন & ডার্ক ফরেস্ট (Emerald)</div>
+                    <div class="theme-card-desc">ডার্ক ওবসিডিয়ান ব্যাকগ্রাউন্ড ও রিচ এমারেল্ড গ্রিন গ্লোয়িং ভাইব।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #10b981;" title="Emerald Green"></span>
+                    <span style="background: #34d399;" title="Mint"></span>
+                    <span style="background: #0d2e21;" title="Forest Surface"></span>
+                    <span style="background: #05140e;" title="Dark BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 4 -->
+                <div class="theme-select-card" data-theme-key="theme-purple" onclick="selectTheme('theme-purple')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">৪. রয়্যাল পার্পল & সাইবার ভায়োলেট (Royal Purple)</div>
+                    <div class="theme-card-desc">লাক্সারি ডার্ক ভায়োলেট ও সাইবারপাঙ্ক নিয়ন পার্পল বাটন।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #a855f7;" title="Purple"></span>
+                    <span style="background: #c084fc;" title="Violet Glow"></span>
+                    <span style="background: #1e1136;" title="Deep Surface"></span>
+                    <span style="background: #0e0719;" title="Dark BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 5 -->
+                <div class="theme-select-card" data-theme-key="theme-amber" onclick="selectTheme('theme-amber')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">৫. গোল্ডেন সানসেট ও অ্যাম্বার (Golden Amber)</div>
+                    <div class="theme-card-desc">ডার্ক চারকোল ব্যাকড্রপ ও প্রিমিয়াম গোল্ডেন অ্যাম্বার লাক্সারি লুক।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #f59e0b;" title="Amber Gold"></span>
+                    <span style="background: #ea580c;" title="Sunset Orange"></span>
+                    <span style="background: #271a0b;" title="Amber Surface"></span>
+                    <span style="background: #120c05;" title="Dark BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 6: Crimson Ruby -->
+                <div class="theme-select-card" data-theme-key="theme-crimson" onclick="selectTheme('theme-crimson')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">৬. ব্লাড ক্রিমসন ও ম্যাট রুবি (Crimson Ruby)</div>
+                    <div class="theme-card-desc">ডার্ক ভেলভেট ব্যাকড্রপ ও ভাইব্রেন্ট লাক্সারি রুবি ক্রিমসন লুক।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #f43f5e;" title="Crimson Ruby"></span>
+                    <span style="background: #fb7185;" title="Rose Highlight"></span>
+                    <span style="background: #2b1019;" title="Ruby Surface"></span>
+                    <span style="background: #110609;" title="Dark BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 7: Midnight Arctic -->
+                <div class="theme-select-card" data-theme-key="theme-midnight" onclick="selectTheme('theme-midnight')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">৭. ডিপ মিডনাইট ও আর্কটিক আইস (Midnight Arctic)</div>
+                    <div class="theme-card-desc">গভীর সমুদ্রের নীল ব্যাকগ্রাউন্ড ও বরফের মতো ক্রিস্টাল গ্লোয়িং অ্যাকসেন্ট।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #38bdf8;" title="Arctic Ice"></span>
+                    <span style="background: #60a5fa;" title="Sky Blue"></span>
+                    <span style="background: #0e1d3d;" title="Midnight Surface"></span>
+                    <span style="background: #060b17;" title="Deep BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 8: Cyber Matrix -->
+                <div class="theme-select-card" data-theme-key="theme-matrix" onclick="selectTheme('theme-matrix')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">৮. সাইবার ম্যাট্রিক্স ও নিয়ন লাইম (Cyber Matrix)</div>
+                    <div class="theme-card-desc">হ্যাকার ও সাইবারপাঙ্ক স্টাইল ভাইব্রেন্ট নিয়ন লাইম গ্রিন গ্লো।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #84cc16;" title="Neon Lime"></span>
+                    <span style="background: #a3e635;" title="Electric Glow"></span>
+                    <span style="background: #162d10;" title="Matrix Surface"></span>
+                    <span style="background: #081305;" title="Dark BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 9: Synthwave Hot Pink -->
+                <div class="theme-select-card" data-theme-key="theme-hotpink" onclick="selectTheme('theme-hotpink')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">৯. সিন্থওয়েভ ও ইলেকট্রিক পিঙ্ক (Synthwave Pink)</div>
+                    <div class="theme-card-desc">ইলেকট্রিক হট পিঙ্ক ও সাইবারপাঙ্ক ম্যাজেন্টা নিয়ন স্টাইল।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #ec4899;" title="Hot Pink"></span>
+                    <span style="background: #f472b6;" title="Magenta Glow"></span>
+                    <span style="background: #2d1024;" title="Plum Surface"></span>
+                    <span style="background: #130610;" title="Dark BG"></span>
+                  </div>
+                </div>
+
+                <!-- Theme 10: Minimalist Monochrome -->
+                <div class="theme-select-card" data-theme-key="theme-monochrome" onclick="selectTheme('theme-monochrome')">
+                  <div class="theme-card-radio"><i class="fa-regular fa-circle"></i></div>
+                  <div class="theme-card-details">
+                    <div class="theme-card-name">১০. স্টিল সিলভার ও মোনোক্রোম (Minimalist Silver)</div>
+                    <div class="theme-card-desc">আল্ট্রা স্লিক মিনিমালিস্ট প্ল্যাটিনাম সিলভার ও ডার্ক টাইটানিয়াম লুক।</div>
+                  </div>
+                  <div class="theme-palette-dots">
+                    <span style="background: #e2e8f0;" title="Platinum Silver"></span>
+                    <span style="background: #94a3b8;" title="Steel"></span>
+                    <span style="background: #1e2025;" title="Titanium Surface"></span>
+                    <span style="background: #0d0e11;" title="Dark BG"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 24px;">
+                <button type="button" class="btn-submit-form" id="btn-save-theme" onclick="saveSelectedTheme()" style="width: 100%; justify-content: center;">
+                  <i class="fa-solid fa-floppy-disk"></i>
+                  <span>এই থিমটি ওয়েবসাইটে সেভ করুন</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Real-time Live Interactive Mockup Preview -->
+            <div class="card-box theme-preview-container">
+              <div class="card-box-header space-between">
+                <div>
+                  <h3><i class="fa-solid fa-desktop" style="color: #10b981;"></i> লাইভ প্রিভিউ (Live Preview)</h3>
+                  <p class="sub-text">নির্বাচিত থিমটিতে আপনার ওয়েবসাইট কেমন দেখাবে তার রিয়েল-টাইম ঝলক:</p>
+                </div>
+                <span class="badge-pill-cyan" id="preview-theme-badge">১. ক্লাসিক রেড</span>
+              </div>
+
+              <!-- Mini Realistic Mockup Box -->
+              <div class="mini-mockup-wrapper" id="mini-mockup-preview" data-theme="theme-red">
+                <!-- Mini Header -->
+                <div class="mockup-navbar">
+                  <div class="mockup-brand">
+                    <div class="mockup-logo"><i class="fa-solid fa-play"></i></div>
+                    <div class="mockup-title" id="mockup-site-title">ভিডিও<span>পোর্টাল</span></div>
+                  </div>
+                  <div class="mockup-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>ভিডিও খুঁজুন...</span>
+                  </div>
+                  <div class="mockup-actions">
+                    <span class="mockup-btn-tg"><i class="fa-brands fa-telegram"></i> Telegram</span>
+                    <span class="mockup-btn-wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
+                  </div>
+                </div>
+
+                <!-- Mini Category Bar -->
+                <div class="mockup-categories">
+                  <span class="mockup-cat-pill active"><i class="fa-solid fa-border-all"></i> ১. সব পোস্ট</span>
+                  <span class="mockup-cat-pill"><i class="fa-solid fa-palette"></i> ২. গ্রাফিক্স ডিজাইন</span>
+                  <span class="mockup-cat-pill"><i class="fa-solid fa-camera"></i> ৩. ফটোগ্রাফি</span>
+                </div>
+
+                <!-- Mini Video Card -->
+                <div class="mockup-cards-row">
+                  <div class="mockup-video-card">
+                    <div class="mockup-card-thumb">
+                      <img src="https://i.ibb.co.com/sdPvwJ7b/Whats-App-Image-2025-12-15-at-10-02-55-AM.jpg" alt="Preview">
+                      <div class="mockup-play-btn"><i class="fa-solid fa-play"></i></div>
+                    </div>
+                    <div class="mockup-card-info">
+                      <div class="mockup-card-title">মোবাইল ফটোগ্রাফি ও রিয়েল লাইফ ফটো</div>
+                      <div class="mockup-label-badge"><i class="fa-solid fa-tag"></i> ফটোগ্রাফি</div>
+                      <div class="mockup-views-row"><i class="fa-solid fa-eye"></i> <span class="mockup-views-text">1 Views</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mini Action Buttons -->
+                <div class="mockup-buttons-row">
+                  <button class="mockup-watch-btn"><i class="fa-solid fa-play"></i> Watch (অ্যাড ১)</button>
+                  <button class="mockup-dl-btn"><i class="fa-solid fa-download"></i> Download Video</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. SETTINGS & PASSWORD TAB -->
+        <section class="tab-pane" id="tab-settings">
+          <!-- 9.0 Default Website Language Settings -->
+          <div class="card-box max-w-700" style="margin-bottom: 24px;">
+            <div class="card-box-header">
+              <h3><i class="fa-solid fa-globe" style="color: #38bdf8;"></i> ওয়েবসাইটের ডিফল্ট ভাষা নির্বাচন (Default Language)</h3>
+              <p class="sub-text">আপনি যে ভাষা নির্বাচন করে সেভ করবেন, পুরো ওয়েবসাইটে স্বয়ংক্রিয়ভাবে সেই ভাষায় সবকিছু প্রদর্শিত হবে (বাংলা, English বা हिन्दी)।</p>
+            </div>
+
+            <form id="admin-change-lang-form" class="admin-form" onsubmit="event.preventDefault(); saveSiteLanguage();">
+              <div class="form-group">
+                <label for="admin-site-lang-select">ওয়েবসাইট ভাষা নির্বাচন করুন <span class="req">*</span></label>
+                <select id="admin-site-lang-select" style="width: 100%; padding: 10px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.95rem;">
+                  <option value="bn">১. বাংলা (Default)</option>
+                  <option value="en">২. English</option>
+                  <option value="hi">৩. हिन्दी (Hindi)</option>
+                </select>
+                <span class="help-text">ভিজিটররা চাইলে উপরের গ্লোব আইকন থেকে তাদের পছন্দের ভাষায় সাইটটি পড়তে পারবে।</span>
+              </div>
+
+              <button type="submit" class="btn-submit-form">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>ভাষা সেভ করুন</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- 9.1 Website Name Change -->
+          <div class="card-box max-w-700" style="margin-bottom: 24px;">
+            <div class="card-box-header">
+              <h3><i class="fa-solid fa-pen-nib" style="color: #38bdf8;"></i> ওয়েবসাইটের নাম পরিবর্তন (Website Name)</h3>
+              <p class="sub-text">এখান থেকে নাম পরিবর্তন করলে মূল ওয়েবসাইট এবং অ্যাডমিন প্যানেলে স্বয়ংক্রিয়ভাবে সেই নামটি প্রদর্শিত হবে।</p>
+            </div>
+
+            <form id="admin-change-site-name-form" class="admin-form">
+              <div class="form-group">
+                <label for="admin-site-name-input">ওয়েবসাইটের নাম (Website Title) <span class="req">*</span></label>
+                <input type="text" id="admin-site-name-input" placeholder="যেমন: ভিডিওপোর্টাল" required>
+                <span class="help-text">ডিফল্ট নাম: ভিডিওপোর্টাল (আপনার ইচ্ছামতো যেকোনো নাম দিতে পারবেন)</span>
+              </div>
+
+              <button type="submit" class="btn-submit-form">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>ওয়েবসাইটের নাম সেভ করুন</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- 9.2 Admin Password Change -->
+          <div class="card-box max-w-700">
+            <div class="card-box-header">
+              <h3><i class="fa-solid fa-lock"></i> অ্যাডমিন পাসওয়ার্ড পরিবর্তন</h3>
+              <p class="sub-text">ড্যাশবোর্ডের নিরাপত্তা নিশ্চিত করতে আপনার সুবিধাজনক নতুন পাসওয়ার্ড সেট করুন।</p>
+            </div>
+
+            <form id="admin-change-pass-form" class="admin-form" onsubmit="handleAdminPasswordChange(event)">
+              <div class="form-group">
+                <label for="current-pass-input">বর্তমান পাসওয়ার্ড <span class="req">*</span></label>
+                <input type="password" id="current-pass-input" placeholder="বর্তমান পাসওয়ার্ড লিখুন" required>
+              </div>
+
+              <div class="form-group">
+                <label for="new-pass-input">নতুন পাসওয়ার্ড <span class="req">*</span></label>
+                <input type="password" id="new-pass-input" placeholder="নতুন পাসওয়ার্ড লিখুন (কমপক্ষে ৪ অক্ষর)" required minlength="4">
+              </div>
+
+              <div class="form-group">
+                <label for="confirm-new-pass-input">নতুন পাসওয়ার্ড নিশ্চিত করুন (Confirm New Password) <span class="req">*</span></label>
+                <input type="password" id="confirm-new-pass-input" placeholder="নতুন পাসওয়ার্ডটি পুনরায় লিখুন" required minlength="4">
+                <span class="help-text">উভয় বক্সে একই পাসওয়ার্ড দিতে হবে।</span>
+              </div>
+
+              <button type="submit" class="btn-submit-form" onclick="handleAdminPasswordChange(event)">
+                <i class="fa-solid fa-key"></i>
+                <span>পাসওয়ার্ড পরিবর্তন করুন</span>
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Single Video Modal -->
+  <div class="modal-backdrop" id="edit-video-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-to-square"></i> ভিডিও এডিট করুন</h3>
+        <button class="modal-close" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="edit-video-form" class="admin-form">
+        <input type="hidden" id="edit-video-id">
+
+        <div class="form-group">
+          <label for="edit-video-title">টাইটেল</label>
+          <input type="text" id="edit-video-title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-video-url">ইমেজ / থাম্বনেইল URL</label>
+          <input type="url" id="edit-video-url" required>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-video-download-url">ভিডিও / ডাউনলোড লিংক (Download Link)</label>
+          <input type="url" id="edit-video-download-url" placeholder="https://drive.google.com/...">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-video-category">ক্যাটাগরি / লেবেল</label>
+          <select id="edit-video-category" required></select>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-video-views">ভিউ সংখ্যা ম্যানুয়ালি সেট করুন</label>
+          <input type="number" id="edit-video-views" min="0" required>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeEditModal()">বাতিল</button>
+          <button type="submit" class="btn-submit-form">পরিবর্তন সেভ করুন</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Category Modal -->
+  <div class="modal-backdrop" id="edit-category-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-to-square"></i> ক্যাটাগরি সম্পাদনা করুন</h3>
+        <button class="modal-close" onclick="closeEditCatModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="admin-edit-single-cat-form" class="admin-form">
+        <input type="hidden" id="edit-cat-id">
+
+        <div class="form-group">
+          <label for="edit-cat-name">ক্যাটাগরির নাম <span class="req">*</span></label>
+          <input type="text" id="edit-cat-name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-cat-icon">ক্যাটাগরি আইকন</label>
+          <select id="edit-cat-icon">
+            <option value="fa-tags">🏷️ ট্যাগ / সাধারণ (Tags)</option>
+            <option value="fa-border-all">▦ অল / সব (Border-All)</option>
+            <option value="fa-film">🎬 সিনেমা / ভিডিও (Film)</option>
+            <option value="fa-fire">🔥 ভাইরাল / ট্রেন্ডিং (Trending)</option>
+            <option value="fa-face-laugh-squint">😂 ফানি / কমেডি (Comedy)</option>
+            <option value="fa-music">🎵 গান / মিউজিক (Music)</option>
+            <option value="fa-gamepad">🎮 গেমিং (Gaming)</option>
+            <option value="fa-camera">📸 ফটোগ্রাফি (Photography)</option>
+            <option value="fa-palette">🎨 গ্রাফিক্স / ডিজাইন (Design)</option>
+            <option value="fa-share-nodes">🌐 সোশ্যাল মিডিয়া (Social)</option>
+            <option value="fa-layer-group">📑 ব্যানার ও থাম্বনেইল (Banners)</option>
+            <option value="fa-mobile-screen">📱 মোবাইল / টেক (Mobile)</option>
+            <option value="fa-graduation-cap">🎓 শিক্ষা / টিউটোরিয়াল (Education)</option>
+            <option value="fa-newspaper">📰 খবর / নিউজ (News)</option>
+            <option value="fa-star">⭐ স্পেশাল / এক্সক্লুসিভ (Special)</option>
+            <option value="fa-heart">❤️ লাভ / রোমান্টিক (Heart)</option>
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeEditCatModal()">বাতিল</button>
+          <button type="submit" class="btn-submit-form">পরিবর্তন সেভ করুন</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Custom Confirm Popup Modal (Screen Center) -->
+  <div class="modal-backdrop" id="custom-confirm-modal">
+    <div class="modal-card confirm-modal-card">
+      <div class="confirm-icon-wrap" id="confirm-icon-wrap">
+        <i class="fa-solid fa-triangle-exclamation" id="confirm-icon"></i>
+      </div>
+      <h3 class="confirm-title" id="confirm-title">নিশ্চিতকরণ</h3>
+      <p class="confirm-message" id="confirm-message">আপনি কি নিশ্চিত এই কাজটি করতে চান?</p>
+      <div class="confirm-actions">
+        <button type="button" class="btn-confirm-cancel" id="btn-confirm-cancel">বাতিল করুন</button>
+        <button type="button" class="btn-confirm-ok danger" id="btn-confirm-ok">হ্যাঁ, নিশ্চিত</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase Security Unlock Password Modal -->
+  <div class="modal-backdrop" id="supabase-pwd-modal">
+    <div class="modal-card confirm-modal-card" style="text-align: left; max-width: 440px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px; margin: 0;">
+          <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i>
+          <span>সিকিউরিটি ভেরিফিকেশন</span>
+        </h3>
+        <button type="button" class="modal-close" onclick="closeSupabasePwdModal()" style="font-size: 1.2rem; cursor: pointer; color: var(--admin-text-sub); background: none; border: none;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p style="color: var(--admin-text-sub); font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5;">
+        সুপাবেস প্রজেক্ট কনফিগারেশন এডিট করতে অ্যাডমিন মাস্টার পাসওয়ার্ড প্রবেশ করান:
+      </p>
+
+      <form id="supabase-pwd-form" onsubmit="event.preventDefault(); return handleSupabasePwdSubmit(event);">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 6px; display: block;">মাস্টার পাসওয়ার্ড <span style="color: #ef4444;">*</span></label>
+          <div style="position: relative;">
+            <input type="password" id="supabase-pwd-input" placeholder="পাসওয়ার্ড লিখুন..." autocomplete="current-password" style="width: 100%; padding: 10px 42px 10px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.95rem;">
+            <button type="button" id="supabase-pwd-eye-btn" onclick="toggleSupabasePwdVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px;">
+              <i class="fa-solid fa-eye" id="supabase-pwd-eye-icon"></i>
+            </button>
+          </div>
+          <span id="supabase-pwd-error" style="color: #ef4444; font-size: 0.82rem; margin-top: 6px; display: none; font-weight: 600;"></span>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn-cancel" onclick="closeSupabasePwdModal()" style="padding: 9px 18px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; font-weight: 600;">বাতিল</button>
+          <button type="button" onclick="handleSupabasePwdSubmit(event)" class="btn-primary" style="padding: 9px 20px; border-radius: 8px; background: #38bdf8; color: #020617; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-lock-open"></i>
+            <span>আনলক করুন</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Box -->
+  <div class="toast-alert" id="admin-toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="admin-toast-msg">অ্যাকশন সফল</span>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
